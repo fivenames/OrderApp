@@ -44,10 +44,12 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
            dynamic result = await Navigator.pushNamed(context, '/add_order');
-           setState(() {
-             Order newOrder = Order(1, result, '1900');
-             orders.add(newOrder);
-           });
+           if(result) {
+             setState(() {
+               Order newOrder = Order(1, result, '1900');
+               orders.add(newOrder);
+             });
+           }
         },
         backgroundColor: Colors.grey,
         child: const Icon(Icons.add),
