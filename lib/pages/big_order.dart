@@ -11,7 +11,7 @@ class BigOrder extends StatefulWidget {
 
 class _BigOrderState extends State<BigOrder> {
   List<String> orders = [];
-  List<String> menuList = Menu().getMenu();
+  List<String> menuList = Menu().getBigMenu();
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,9 @@
 class Menu{
-  late Map<String, double> menu;
+  late Map<String, double> bigMenu;
+  late Map<String, double> smallMenu;
 
   Menu() {
-    menu = {
+    bigMenu = {
       '1': 19.8,
       '2': 18.8,
       '3': 16.8,
@@ -25,10 +26,18 @@ class Menu{
       'A6': 9.0,
       'A7': 9.0,
     };
+    smallMenu = {
+      '32B': 5.8,
+    };
   }
 
-  List<String> getMenu(){
-    List<String> menu = this.menu.keys.toList();
+  List<String> getBigMenu(){
+    List<String> menu = bigMenu.keys.toList();
+    return menu;
+  }
+
+  List<String> getSmallMenu(){
+    List<String> menu = smallMenu.keys.toList();
     return menu;
   }
 }

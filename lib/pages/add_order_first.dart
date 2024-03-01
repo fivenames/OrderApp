@@ -21,7 +21,7 @@ class _AddOrderState extends State<AddOrder> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Expanded( // Todo: tabulate sum of the orders
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -70,7 +70,7 @@ class _AddOrderState extends State<AddOrder> {
               color: Colors.lightBlueAccent,
               child: ListTile(
                 onTap: () async {
-                  dynamic result = Navigator.pushNamed(context, '/small_order');
+                  dynamic result = await Navigator.pushNamed(context, '/small_order');
                   setState(() {
                     dishes = dishes + result;
                   });
@@ -86,7 +86,7 @@ class _AddOrderState extends State<AddOrder> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
+          Navigator.pop(context, dishes);
         },
         child: const Icon(Icons.check),
       ),

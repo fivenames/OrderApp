@@ -11,16 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Order> orders = [
-    Order(1, ['7', '2', '14', '24', '1*'], '1900'),
-    Order(7, ['32B'], '1903'),
-    Order(7, ['32B'], '1903'),
-    Order(1, ['7', '2', '14', '24', '1*'], '1900'),
-    Order(7, ['32B'], '1903'),
-    Order(7, ['32B'], '1903'),
-    Order(1, ['7', '2', '14', '24', '1*', '7', '2', '14', '24', '1*'], '1900'), // TODO: consider for cases when order is too long
-    Order(7, ['32B'], '1903'),
-  ];
+  List<Order> orders = [];
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +42,12 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add_order');
+        onPressed: () async {
+           dynamic result = await Navigator.pushNamed(context, '/add_order');
+           setState(() {
+             Order newOrder = Order(1, result, '1900');
+             orders.add(newOrder);
+           });
         },
         backgroundColor: Colors.grey,
         child: const Icon(Icons.add),
