@@ -1,7 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:test_app/order_class.dart';
 import 'package:test_app/templates/order_table_header_template.dart';
 import 'package:test_app/templates/order_card_template.dart';
+import 'dart:core';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -42,14 +46,41 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-           dynamic result = await Navigator.pushNamed(context, '/add_order');
-           if(result) {
-             setState(() {
-               Order newOrder = Order(1, result, '1900');
-               orders.add(newOrder);
-             });
-           }
+        onPressed: () {
+          DateTime now = DateTime.now();
+          String currentTime = '${now.hour}:${now.minute}';
+
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("添加订单"),
+                actions: [
+                  TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        dynamic result = await Navigator.pushNamed(context, '/add_order');
+                        if(result.isNotEmpty){
+                          setState(() {
+                            Order newOrder = Order(1, result, currentTime, true);
+                            orders.add(newOrder);
+                          });
+                        }
+                      },
+                      child: const Text("吃的")),
+                  TextButton(
+                      onPressed: () async{
+                        Navigator.pop(context);
+                        dynamic result = await Navigator.pushNamed(context, '/add_order');
+                        if(result.isNotEmpty){
+                          setState(() {
+                            Order newOrder = Order(1, result, currentTime, false);
+                            orders.add(newOrder);
+                          });
+                        }
+                      },
+                      child: const Text("打包"))
+                ],
+              ));
         },
         backgroundColor: Colors.grey,
         child: const Icon(Icons.add),
