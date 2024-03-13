@@ -14,7 +14,7 @@ class OrderCard extends StatefulWidget {
 class _OrderCardState extends State<OrderCard> {
   @override
   Widget build(BuildContext context) {
-    Color cardColor = widget.order.type ? Colors.white : Colors.lightBlueAccent.shade100;
+    Color cardColor = widget.order.type ? Colors.white70 : Colors.cyan.shade300;
 
     return Card(
       color: cardColor,
@@ -26,11 +26,14 @@ class _OrderCardState extends State<OrderCard> {
           children: [
             Row(
               children: [
-                _buildColumnItem('${widget.order.customerTag}', 2, 20.0, Colors.redAccent),
-                _buildColumnItem(
-                  widget.order.dishes.join(', '), 6, 18.0, Colors.black,
+                _buildColumnItem('${widget.order.customerTag}', 2, 20.0, Colors.deepOrange.shade900),
+                Expanded(
+                  flex: 6,
+                  child: Wrap(
+                    children: widget.order.dishes.map((dish) => _buildDishChip(dish)).toList(),
+                  ),
                 ),
-                _buildColumnItem(widget.order.timeOrdered, 2, 16.0, Colors.blueGrey),
+                _buildColumnItem(widget.order.timeOrdered, 2, 16.0, Colors.blueGrey.shade900),
               ],
             ),
             const SizedBox(height: 8),
@@ -38,7 +41,7 @@ class _OrderCardState extends State<OrderCard> {
               alignment: Alignment.center,
               child: ElevatedButton.icon(
                 onPressed: widget.delete,
-                icon: const Icon(Icons.task, size: 20.0),
+                icon: const Icon(Icons.task, size: 18.0),
                 label: const Text('完成', style: TextStyle(fontSize: 12.0)),
               ),
             ),
@@ -58,6 +61,21 @@ class _OrderCardState extends State<OrderCard> {
       ),
     );
   }
+
+  Widget _buildDishChip(String dish) {
+    return Chip(
+      label: Text(
+        dish,
+        style: const TextStyle(
+            fontSize: 14.0,
+            color: Colors.black),
+      ),
+      backgroundColor: Colors.lightGreenAccent.shade100,
+      labelStyle: const TextStyle(color: Colors.white),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    );
+  }
 }
+
 
 
