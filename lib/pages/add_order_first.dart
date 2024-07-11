@@ -133,8 +133,27 @@ class _AddOrderState extends State<AddOrder> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          List<dynamic> data = [dishes, sum];
-          Navigator.pop(context, data);
+          showDialog<int>(
+            context: context,
+            builder: (context) => SimpleDialog(
+              title: const Text("号码"),
+              children: List.generate(10, (index) {
+                index += 1;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9),
+                  child: SimpleDialogOption(
+                    onPressed: () {
+                      Navigator.pop(context); // pop dialog
+
+                      List<dynamic> data = [dishes, sum, index];
+                      Navigator.pop(context, data); // pop page
+                    },
+                    child: Text(index.toString(), style: const TextStyle(fontSize: 18),),
+                  ),
+                );
+              }),
+            ),
+          );
         },
         child: const Icon(Icons.check),
       ),

@@ -32,6 +32,7 @@ class Menu{
     '23': 7.0,
     '24': 7.0,
     '25': 10.0,
+    '空': 0,
     };
 
   static Map<String, double> smallMenu = {
@@ -49,6 +50,7 @@ class Menu{
     '38' : 6.0,
     '39' : 5.5,
     '白饭': 0.7,
+    '空': 0,
   };
 
   static List<String> getBigMenu(){

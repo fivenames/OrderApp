@@ -1,26 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:test_app/order_class.dart';
 import 'package:test_app/templates/order_table_header_template.dart';
 import 'package:test_app/templates/order_card_template.dart';
 
 import 'dart:core';
+import 'package:sqflite/sqflite.dart';
 
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final Database database;
+  const Home(this.database, {super.key});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  // Current orders
-  List<Order> orders = [];
   double revenue = 0.0;
+  List<Order> orders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    queryData(widget.database, orders);
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         elevation: 20,
@@ -84,18 +92,21 @@ class _HomeState extends State<Home> {
                 actions: [
                   TextButton(
                       onPressed: () async {
-                        Navigator.pop(context);
+                        Navigator.pop(context); // pop dialog
+                        //
                         dynamic resultList = await Navigator.pushNamed(
                             context, '/add_order',
-                            arguments: true,
+                            arguments: true, // having here
                         );
-                        dynamic result = resultList[0];
+                        dynamic dishes = resultList[0];
+                        dynamic orderTag = resultList[2];
 
-                        if(result.isNotEmpty){
+                        if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(1, result, currentTime, true);
+                            Order newOrder = Order(orderTag, dishes, currentTime, true);
                             orders.add(newOrder);
                             revenue += resultList[1];
+                            insertData(widget.database, newOrder, revenue);
                           });
                         }
                       },
@@ -109,13 +120,15 @@ class _HomeState extends State<Home> {
                             context, '/add_order',
                             arguments: false,
                         );
-                        dynamic result = resultList[0];
+                        dynamic dishes = resultList[0];
+                        dynamic orderTag = resultList[2];
 
-                        if(result.isNotEmpty){
+                        if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(1, result, currentTime, false);
+                            Order newOrder = Order(orderTag, dishes, currentTime, false);
                             orders.add(newOrder);
                             revenue += resultList[1];
+                            insertData(widget.database, newOrder, revenue);
                           });
                         }
                       },
@@ -129,4 +142,38 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+}
+
+Future<void> queryData(Database database, List<Order> orders) async {
+  List<Map> list = await database.rawQuery('SELECT * FROM Orders WHERE status = 0');
+  for (var order in list) {
+    List<String> dish = List<String>.from(jsonDecode(order['dishes']));
+    String timeOfOrder = order['time'];
+    int customerTag = order['customerTag'];
+    int types = order['type'];
+    bool type = true;
+    if(types == 0){
+      type = false;
+    }
+
+    Order newOrder = Order(customerTag, dish, timeOfOrder, type);
+    orders.add(newOrder);
+  }
+}
+
+Future<void> insertData(Database database, Order order, double sum) async {
+  await database.transaction((txn) async {
+    int customerTag = order.customerTag;
+    List<String> dishes = order.dishes;
+    String dish = jsonEncode(dishes);
+    String time = order.timeOrdered;
+    int type = 0;
+    if(order.type){
+      type = 1;
+    }
+
+    int id = await txn.rawInsert(
+        'INSERT INTO Orders(customerTag, dishes, time, type, status, sum) VALUES(?, ?, ?, ?, ?, ?)',
+        [customerTag, dish, time, type, 0, sum]);
+  });
 }
