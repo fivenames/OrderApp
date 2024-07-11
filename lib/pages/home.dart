@@ -25,6 +25,10 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     queryData(widget.database, orders);
+    Future.delayed(const Duration(seconds: 3), (){
+      setState(() {
+      });
+    });
   }
 
   @override

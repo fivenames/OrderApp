@@ -13,6 +13,8 @@ Future<void> main() async {
   var databasePath = await getDatabasesPath();
   String path = join(databasePath, 'orders.db');
 
+  //await deleteDatabase(path);
+
   // Open the database
   Database database = await openDatabase(path, version: 1,
       onCreate: (Database db, int version) async {
