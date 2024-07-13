@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:test_app/order_class.dart';
 import 'package:test_app/templates/order_table_header_template.dart';
@@ -7,6 +5,7 @@ import 'package:test_app/templates/order_card_template.dart';
 
 import 'dart:core';
 import 'package:sqflite/sqflite.dart';
+import 'package:test_app/database_helper.dart';
 
 
 class Home extends StatefulWidget {
@@ -19,15 +18,20 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   double revenue = 0.0;
-  List<Order> orders = [];
+  Map<Order, int> orders = {}; // Order : table ID of database
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    queryData(widget.database, orders);
-    Future.delayed(const Duration(seconds: 3), (){
-      setState(() {
-      });
+    fetchData();
+  }
+
+  void fetchData() async {
+    // called once during boot up
+    revenue = await queryData(widget.database, orders);
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -65,23 +69,29 @@ class _HomeState extends State<Home> {
         ],
       ),
 
-      body: Column(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           const OrderHeader(),
 
           Expanded(
             child: ListView.builder(
-            itemCount: orders.length,
-            itemBuilder: (context, index){
-              return OrderCard(orders[index], delete: (){
-                setState(() {
-                  orders.remove(orders[index]);
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                List<MapEntry<Order, int>> orderEntries = orders.entries.toList();
+                Order currentOrder = orderEntries[index].key;
+                int id = orderEntries[index].value;
+                return OrderCard(currentOrder, delete: () {
+                  setState(() {
+                    orders.remove(currentOrder);
+                    updateData(widget.database, id);
+                  });
                 });
-              });
-            },
-                    ),
+              },
+            ),
           ),
-        ]
+        ],
       ),
 
       floatingActionButton: FloatingActionButton(
@@ -103,14 +113,15 @@ class _HomeState extends State<Home> {
                             arguments: true, // having here
                         );
                         dynamic dishes = resultList[0];
+                        dynamic sum = resultList[1];
                         dynamic orderTag = resultList[2];
 
                         if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(orderTag, dishes, currentTime, true);
-                            orders.add(newOrder);
-                            revenue += resultList[1];
-                            insertData(widget.database, newOrder, revenue);
+                            Order newOrder = Order(orderTag, dishes, currentTime, true, sum);
+                            orders[newOrder] = -1;
+                            revenue += sum;
+                            insertData(widget.database, newOrder, sum, orders, revenue);
                           });
                         }
                       },
@@ -125,14 +136,15 @@ class _HomeState extends State<Home> {
                             arguments: false,
                         );
                         dynamic dishes = resultList[0];
+                        dynamic sum = resultList[1];
                         dynamic orderTag = resultList[2];
 
                         if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(orderTag, dishes, currentTime, false);
-                            orders.add(newOrder);
-                            revenue += resultList[1];
-                            insertData(widget.database, newOrder, revenue);
+                            Order newOrder = Order(orderTag, dishes, currentTime, false, sum);
+                            orders[newOrder] = -1;
+                            revenue += sum;
+                            insertData(widget.database, newOrder, sum, orders, revenue);
                           });
                         }
                       },
@@ -148,36 +160,4 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<void> queryData(Database database, List<Order> orders) async {
-  List<Map> list = await database.rawQuery('SELECT * FROM Orders WHERE status = 0');
-  for (var order in list) {
-    List<String> dish = List<String>.from(jsonDecode(order['dishes']));
-    String timeOfOrder = order['time'];
-    int customerTag = order['customerTag'];
-    int types = order['type'];
-    bool type = true;
-    if(types == 0){
-      type = false;
-    }
 
-    Order newOrder = Order(customerTag, dish, timeOfOrder, type);
-    orders.add(newOrder);
-  }
-}
-
-Future<void> insertData(Database database, Order order, double sum) async {
-  await database.transaction((txn) async {
-    int customerTag = order.customerTag;
-    List<String> dishes = order.dishes;
-    String dish = jsonEncode(dishes);
-    String time = order.timeOrdered;
-    int type = 0;
-    if(order.type){
-      type = 1;
-    }
-
-    int id = await txn.rawInsert(
-        'INSERT INTO Orders(customerTag, dishes, time, type, status, sum) VALUES(?, ?, ?, ?, ?, ?)',
-        [customerTag, dish, time, type, 0, sum]);
-  });
-}

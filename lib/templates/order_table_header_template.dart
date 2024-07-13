@@ -17,7 +17,7 @@ class OrderHeader extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 6,
+            flex: 7,
             child: Text(
               '菜品',
               style: TextStyle(fontSize: 18.0, color: Colors.grey),
@@ -26,7 +26,7 @@ class OrderHeader extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              '订单时间',
+              '时间',
               style: TextStyle(fontSize: 18.0, color: Colors.grey),
             ),
           ),

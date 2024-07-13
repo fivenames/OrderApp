@@ -36,14 +36,23 @@ class _OrderCardState extends State<OrderCard> {
                 _buildColumnItem(widget.order.timeOrdered, 2, 16.0, Colors.blueGrey.shade900),
               ],
             ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton.icon(
-                onPressed: widget.delete,
-                icon: const Icon(Icons.task, size: 18.0),
-                label: const Text('完成', style: TextStyle(fontSize: 12.0)),
-              ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 70,),
+                const Spacer(),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: widget.delete,
+                    icon: const Icon(Icons.task, size: 18.0),
+                    label: const Text('完成', style: TextStyle(fontSize: 12.0)),
+                  ),
+                ),
+                const Spacer(),
+                Text("\$${widget.order.sum.toStringAsFixed(2)}", style: const TextStyle(fontSize: 16, color: Colors.deepOrange),),
+                const SizedBox(width: 30,),
+              ]
             ),
           ],
         ),

@@ -27,7 +27,7 @@ class _AddOrderState extends State<AddOrder> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-              flex: 1,
+              flex: 2,
               child: Padding(
                 padding: const EdgeInsets.all(14),
                 child: Row(
@@ -35,7 +35,7 @@ class _AddOrderState extends State<AddOrder> {
                   children: [
                     const Text(
                       '已点：',
-                      style: TextStyle(fontSize: 18,),),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
                     const SizedBox(width: 33,),
                     Expanded(
                       child: Center(
@@ -75,11 +75,10 @@ class _AddOrderState extends State<AddOrder> {
                       color: Colors.amber.shade200,
                       weight: 20,
                     ),
-                    const SizedBox(width: 18,),
                     Text(
                       sum.toStringAsFixed(2),
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.deepOrangeAccent.shade200,
                       ),
@@ -91,7 +90,7 @@ class _AddOrderState extends State<AddOrder> {
           ),
 
           Expanded(
-            flex: 6,
+            flex: 5,
             child: Card(
               color: Colors.orangeAccent.shade100,
               child: ListTile(
@@ -111,7 +110,7 @@ class _AddOrderState extends State<AddOrder> {
           ),
 
           Expanded(
-            flex: 6,
+            flex: 5,
             child: Card(
               color: Colors.lightBlueAccent.shade100,
               child: ListTile(
@@ -133,27 +132,31 @@ class _AddOrderState extends State<AddOrder> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          if(dishes.isNotEmpty){
           showDialog<int>(
             context: context,
             builder: (context) => SimpleDialog(
               title: const Text("号码"),
-              children: List.generate(10, (index) {
-                index += 1;
+              children: List.generate(10, (tag) {
+                tag += 1;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 9),
                   child: SimpleDialogOption(
                     onPressed: () {
                       Navigator.pop(context); // pop dialog
 
-                      List<dynamic> data = [dishes, sum, index];
+                      List<dynamic> data = [dishes, sum, tag];
                       Navigator.pop(context, data); // pop page
                     },
-                    child: Text(index.toString(), style: const TextStyle(fontSize: 18),),
+                    child: Text(tag.toString(), style: const TextStyle(fontSize: 18),),
                   ),
                 );
               }),
             ),
-          );
+          );}
+          else{
+            Navigator.pop(context, [[], 0, 0]);
+          }
         },
         child: const Icon(Icons.check),
       ),
@@ -173,7 +176,10 @@ class _AddOrderState extends State<AddOrder> {
       }
 
       if(!orderType){
-        if(Menu.isBigBox(dish)){
+        if(dish == '饭' || dish == '蛋'){
+          continue;
+        }
+        else if(Menu.isBigBox(dish)){
           orderSum += 1;
         }
         else{
