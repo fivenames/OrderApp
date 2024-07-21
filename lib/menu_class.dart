@@ -3,12 +3,10 @@ class Menu{
     '1': 19.8,
     '2': 18.8,
     '3': 16.8,
-    '5': 28.0,
     '6': 14.0,
     '7': 10.0,
     '8': 18.0,
     '9': 9.0,
-    '10': 8.0,
     '11': 18.0,
     '12': 10.0,
     '13': 10.0,
@@ -34,7 +32,9 @@ class Menu{
     '25': 10.0,
     '饭': 0.7,
     '蛋': 1.0,
-    '空': 0,
+    '加料 (素)': 2.0,
+    '加料 (肉)': 3.0,
+    ' ': 0,
     };
 
   static Map<String, double> smallMenu = {
@@ -53,7 +53,8 @@ class Menu{
     '39' : 5.5,
     '饭': 0.7,
     '蛋': 1.0,
-    '空': 0,
+    '加料': 2.0,
+    ' ': 0,
   };
 
   static List<String> getBigMenu(){
@@ -75,7 +76,14 @@ class Menu{
   }
 
   static bool isBigBox(String item){
-    if((item.length >= 2 && item.substring(0, 2) == '15') || item == '1'|| item == '2' || item == '3' || item == '5'){
+    if((item.length > 2 && item.substring(0, 2) == '15') || item == '1'|| item == '2' || item == '3'){
+      return true;
+    }
+    return false;
+  }
+
+  static bool noPackagingFee(String item){
+    if((item.length >= 2 && item.substring(0, 2) == '加料') || item == '饭' || item == '蛋'){
       return true;
     }
     return false;

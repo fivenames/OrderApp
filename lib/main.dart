@@ -3,6 +3,7 @@ import 'package:test_app/pages/home.dart';
 import 'package:test_app/pages/add_order_first.dart';
 import 'package:test_app/pages/big_order.dart';
 import 'package:test_app/pages/small_order.dart';
+import 'package:test_app/pages/order_record.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'database_helper.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
         '/add_order': (context) => const AddOrder(),
         '/small_order': (context) => const SmallOrder(),
         '/big_order': (context) => const BigOrder(),
+        '/record': (context) => const OrderRecord(),
       },
     );
   }

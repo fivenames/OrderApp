@@ -65,7 +65,7 @@ class _AddOrderState extends State<AddOrder> {
           Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(14),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -97,8 +97,10 @@ class _AddOrderState extends State<AddOrder> {
                 onTap: () async {
                   dynamic result = await Navigator.pushNamed(context, '/big_order');
                   setState(() {
-                    dishes = dishes + result;
-                    sum += calculateSum(result, orderType, true);
+                    if(result != Null) {
+                      dishes = dishes + result;
+                      sum += calculateSum(result, orderType, true);
+                    }
                   });
                 },
                 title: const Text(
@@ -117,8 +119,10 @@ class _AddOrderState extends State<AddOrder> {
                 onTap: () async {
                   dynamic result = await Navigator.pushNamed(context, '/small_order');
                   setState(() {
-                    dishes = dishes + result;
-                    sum += calculateSum(result, orderType, false);
+                    if(result != Null) {
+                      dishes = dishes + result;
+                      sum += calculateSum(result, orderType, false);
+                    }
                   });
                 },
                 title: const Text(
@@ -145,7 +149,9 @@ class _AddOrderState extends State<AddOrder> {
                     onPressed: () {
                       Navigator.pop(context); // pop dialog
 
-                      List<dynamic> data = [dishes, sum, tag];
+                      DateTime now = DateTime.now();
+                      String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+                      List<dynamic> data = [dishes, sum, tag, currentTime];
                       Navigator.pop(context, data); // pop page
                     },
                     child: Text(tag.toString(), style: const TextStyle(fontSize: 18),),
@@ -176,14 +182,14 @@ class _AddOrderState extends State<AddOrder> {
       }
 
       if(!orderType){
-        if(dish == '饭' || dish == '蛋'){
+        if(Menu.noPackagingFee(dish)){
           continue;
         }
-        else if(Menu.isBigBox(dish)){
+        else if(Menu.isBigBox(dish)){ //big box $1.00
           orderSum += 1;
         }
         else{
-          orderSum += 0.3;
+          orderSum += 0.3; //small box $0.30
         }
       }
     }

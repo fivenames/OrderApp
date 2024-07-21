@@ -12,9 +12,13 @@ class BigOrder extends StatefulWidget {
 class _BigOrderState extends State<BigOrder> {
   List<String> orders = [];
   List<String> menuList = Menu.getBigMenu();
+  late List<int> counts;
 
   @override
   Widget build(BuildContext context) {
+    int len = menuList.length;
+    counts = List.filled(len, 0);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('添加订单'),
@@ -23,7 +27,7 @@ class _BigOrderState extends State<BigOrder> {
       body: ListView.builder(
         itemCount: menuList.length,
         itemBuilder: (context, index) {
-          return MenuCard(menuItem: menuList[index], count: 0, order: orders,);
+          return MenuCard(menuItem: menuList[index], order: orders, counts: counts, index: index,);
         },
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {

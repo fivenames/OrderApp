@@ -1,26 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MenuCard extends StatefulWidget {
-  MenuCard({super.key, required this.menuItem, required this.count, required this.order});
+  const MenuCard({super.key, required this.menuItem, required this.order, required this.counts, required this.index});
   final String menuItem;
-  final int count;
-  List<String> order;
+  final List<String> order;
+  final List<int> counts;
+  final int index;
 
   @override
   State<MenuCard> createState() => _MenuCardState();
 }
 
 class _MenuCardState extends State<MenuCard> {
-  int count = 0;
-  late List<String> order;
-
-  @override
-  void initState() {
-    super.initState();
-    count = widget.count;
-    order = widget.order;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,24 +32,24 @@ class _MenuCardState extends State<MenuCard> {
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () {
-                    if (count > 0) {
-                      order.remove(widget.menuItem);
+                    if (widget.counts[widget.index] > 0) {
+                      widget.order.remove(widget.menuItem);
                       setState(() {
-                        count--;
+                        widget.counts[widget.index]--;
                       });
                     }
                   },
                 ),
                 Text(
-                  '$count',
+                  '${widget.counts[widget.index]}',
                   style: const TextStyle(fontSize: 18),
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () {
-                    order.add(widget.menuItem);
+                    widget.order.add(widget.menuItem);
                     setState(() {
-                      count++;
+                      widget.counts[widget.index]++;
                     });
                   },
                 ),

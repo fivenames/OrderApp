@@ -50,6 +50,7 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.black87,
         actions: [
           IconButton( // show daily revenue
+            color: Colors.white54,
               onPressed: (){
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -65,7 +66,19 @@ class _HomeState extends State<Home> {
                     )
                 );
               },
-              icon: const Icon(Icons.info))
+              icon: const Icon(Icons.info)),
+          PopupMenuButton(
+            iconColor: Colors.white70,
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                  value: 'record',
+                  child: Text("订单记录"),)
+            ],
+            onSelected: (value) {
+            if(value == 'record'){
+              Navigator.pushNamed(context, '/record');
+            }
+          },),
         ],
       ),
 
@@ -96,9 +109,6 @@ class _HomeState extends State<Home> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          DateTime now = DateTime.now();
-          String currentTime = '${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-
           showDialog( // Get input for type of order
               context: context,
               builder: (context) => AlertDialog(
@@ -118,7 +128,7 @@ class _HomeState extends State<Home> {
 
                         if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(orderTag, dishes, currentTime, true, sum);
+                            Order newOrder = Order(orderTag, dishes, resultList[3], true, sum);
                             orders[newOrder] = -1;
                             revenue += sum;
                             insertData(widget.database, newOrder, sum, orders, revenue);
@@ -141,7 +151,7 @@ class _HomeState extends State<Home> {
 
                         if(dishes.isNotEmpty){
                           setState(() {
-                            Order newOrder = Order(orderTag, dishes, currentTime, false, sum);
+                            Order newOrder = Order(orderTag, dishes, resultList[3], false, sum);
                             orders[newOrder] = -1;
                             revenue += sum;
                             insertData(widget.database, newOrder, sum, orders, revenue);
