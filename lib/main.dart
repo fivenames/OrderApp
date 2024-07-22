@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_app/pages/home.dart';
-import 'package:test_app/pages/add_order_first.dart';
+import 'package:test_app/pages/add_order.dart';
 import 'package:test_app/pages/big_order.dart';
 import 'package:test_app/pages/small_order.dart';
 import 'package:test_app/pages/order_record.dart';

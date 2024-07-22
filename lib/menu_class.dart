@@ -5,7 +5,7 @@ class Menu{
     '3': 16.8,
     '6': 14.0,
     '7': 10.0,
-    '8': 18.0,
+    '8': 10.0,
     '9': 9.0,
     '11': 18.0,
     '12': 10.0,
@@ -30,6 +30,7 @@ class Menu{
     '23': 7.0,
     '24': 7.0,
     '25': 10.0,
+    '不辣': 0.0,
     '饭': 0.7,
     '蛋': 1.0,
     '加料 (素)': 2.0,
@@ -51,6 +52,7 @@ class Menu{
     '36' : 5.0,
     '38' : 6.0,
     '39' : 5.5,
+    '不辣': 0.0,
     '饭': 0.7,
     '蛋': 1.0,
     '加料': 2.0,
@@ -83,7 +85,7 @@ class Menu{
   }
 
   static bool noPackagingFee(String item){
-    if((item.length >= 2 && item.substring(0, 2) == '加料') || item == '饭' || item == '蛋'){
+    if((item.length >= 2 && item.substring(0, 2) == '加料') || item == '饭' || item == '蛋' || item == '不辣'){
       return true;
     }
     return false;

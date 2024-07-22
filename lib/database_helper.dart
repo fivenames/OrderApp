@@ -68,3 +68,24 @@ Future<void> clearDatabase(Database database) async {
   await database.delete('Revenue');
   await database.delete('MetaData');
 }
+
+Future<void> queryRecord(Database database, List<Order> orders) async {
+  //query for all incomplete orders
+  List<Map> list = await database.rawQuery('SELECT * FROM Orders ORDER BY time DESC');
+
+  for (var order in list) {
+    int id = order['id'];
+    List<String> dish = List<String>.from(jsonDecode(order['dishes']));
+    String timeOfOrder = order['time'];
+    int customerTag = order['customerTag'];
+    int types = order['type'];
+    bool type = true;
+    if(types == 0){
+      type = false;
+    }
+    double sum = order['sum'];
+
+    Order newOrder = Order(customerTag, dish, timeOfOrder, type, sum);
+    orders.add(newOrder);
+  }
+}

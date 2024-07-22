@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
             ],
             onSelected: (value) {
             if(value == 'record'){
-              Navigator.pushNamed(context, '/record');
+              Navigator.pushNamed(context, '/record', arguments: widget.database);
             }
           },),
         ],
